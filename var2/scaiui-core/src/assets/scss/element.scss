@@ -1,0 +1,31 @@
+@import "variables.scss";
+@import "mixins.scss";
+
+.el-row {
+  margin-left: $base-length!important;
+  margin-right: $base-length!important;
+}
+
+.el-form--inline .el-form-item {
+  display: inline-flex!important;
+}
+
+.el-form-item__label{
+  flex-white-space : nowrap!important;
+  white-space:nowrap!important;
+}
+
+.el-dropdown {
+  color: $main-color;
+  line-height: $base-length * 4;
+}
+
+.plate-theme .el-color-picker--mini .el-color-picker__trigger {
+  height: $base-length * 2.5;
+  width: $base-length * 2.5;
+}
+
+.plate-theme .el-input-group__append, .el-input-group__prepend {
+  padding: 0 $base-length * .8
+}
+

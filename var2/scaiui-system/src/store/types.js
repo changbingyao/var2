@@ -1,0 +1,5 @@
+// app.js
+export const CHANGE_LANGUEGE = 'CHANGE_LANGUEGE';
+export const ADD_ACTIVEPAGE = 'ADD_ACTIVEPAGE';
+export const REMOVE_ACTIVEPAGE = 'REMOVE_ACTIVEPAGE';
+export const NEW_THEME_APPLY = 'NEW_THEME_APPLY';

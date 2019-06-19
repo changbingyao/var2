@@ -1,0 +1,146 @@
+<template>
+  <el-form :model="data" :rules="rules" ref="editForm" label-width="132px">
+    <el-row>
+      <sFormItem2 :label="$t('org.orgCode')" prop="orgCode">
+        <el-input v-model="data.orgCode" :disabled="operator!='add'"></el-input>
+      </sFormItem2>
+      <sFormItem2 :label="$t('org.orgName')" prop="orgName">
+        <el-input v-model="data.orgName" :disabled="operator=='view'"></el-input>
+      </sFormItem2>
+      <sFormItem2 :label="$t('org.orgCategory')" prop="orgCategory">
+        <sSelect v-model="data.orgCategory"
+                 option="ORG_CATEGORY"
+                 :placeholder="$t('placeholder.select',[$t('org.orgCategory')])" :disabled="operator=='view'"
+                 clearable>
+        </sSelect>
+      </sFormItem2>
+      <sFormItem2 :label="$t('org.orgLevel')" prop="orgLevel">
+        <sSelect v-model="data.orgLevel"
+                 option="ORG_GRADE"
+                 :placeholder="$t('placeholder.select',[$t('org.orgLevel')])" :disabled="operator=='view'" clearable>
+        </sSelect>
+      </sFormItem2>
+    </el-row>
+    <el-row>
+      <sFormItem2 align="right" col-span="24">
+        <el-button type="primary" @click="handleSubmit('editForm')" v-show="operator!='view'">{{$t('ok')}}</el-button>
+        <el-button @click="handleCancel">{{$t('cancel')}}</el-button>
+      </sFormItem2>
+    </el-row>
+  </el-form>
+</template>
+<script>
+  export default {
+    name: "OrgEdit",
+    model: {
+      prop: 'dialogIsVisible',
+      event: 'closeDialog'
+    },
+    props: {
+      dialogIsVisible: {
+        required: true
+      },
+      operator: {
+        type: String,
+        required: true
+      },
+      data: {type: Object}
+    },
+    data() {
+      return {
+        rules: {
+          orgCode: [
+            {required: true, message: this.$t('placeholder.default', [this.$t('org.orgCode')]), trigger: 'blur'},
+            {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
+          ],
+          orgName: [
+            {required: true, message: this.$t('placeholder.default', [this.$t('org.orgName')]), trigger: 'blur'},
+            {min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur'}
+          ],
+          orgCategory: [
+            {required: true, message: this.$t('placeholder.default', [this.$t('org.orgCategory')]), trigger: 'blur'}
+          ],
+          orgLevel: [
+            {required: true, message: this.$t('placeholder.select', [this.$t('org.orgLevel')]), trigger: 'change'}
+          ],
+        }
+      }
+    },
+    methods: {
+      /**
+       * 点击取消按钮时关闭对话框
+       */
+      handleCancel() {
+        this.$emit('closeDialog', false)
+        this.$emit('loadData');
+      },
+
+      /**
+       * 点击确定按钮时保存数据
+       * @param formName
+       * @returns {boolean}
+       */
+      handleSubmit(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            if (this.operator == "edit") {
+              this.userEdit()
+            } else {
+              this.userAdd()
+            }
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+
+      },
+
+      /**
+       * 添加服务调用
+       */
+      userAdd() {
+        this.$service.post('/system/orgs', this.data)
+          .then(r => {
+            if (r.data.code === this.$successCode) {
+              this.$emit('closeDialog', false)
+              this.$emit('loadData')
+              this.$Message({
+                showClose: true,
+                message: this.$t('text.success'),
+                type: 'success'
+              })
+            }
+          })
+          .catch(err => {
+            console.error('err', err)
+          })
+      },
+
+      /**
+       * 修改服务调用
+       */
+      userEdit() {
+        this.$service.put('/system/orgs', this.data)
+          .then(r => {
+            if (r.data.code === this.$successCode) {
+              this.$emit('closeDialog', false)
+              this.$emit('loadData')
+              this.$Message({
+                showClose: true,
+                message: this.$t('text.success'),
+                type: 'success'
+              })
+            }
+          })
+          .catch(err => {
+            console.error('err', err)
+          })
+      },
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>
